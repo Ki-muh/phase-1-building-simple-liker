@@ -6,14 +6,11 @@ const FULL_HEART = '♥'
 const likeButtons = document.getElementsByClassName('like-glyph');
 
 document.addEventListener('DOMContentLoaded', () => {
-  // console.log(likeButtons);
   Array.from(likeButtons).forEach(likeButton => {
     likeButton.addEventListener('click', () => {
       mimicServerCall()
       .then((result) => {
-        // console.log(result);
         if(likeButton.textContent === EMPTY_HEART) {
-          // console.log('Change heart');
           likeButton.textContent = FULL_HEART;
           likeButton.classList.add('activated-heart');
         } else {
@@ -28,7 +25,6 @@ document.addEventListener('DOMContentLoaded', () => {
 })
 
 function handleError(errorMessage) {
-  // console.log(errorMessage);
   const errorModal = document.getElementById('modal');
   errorModal.classList.remove('hidden');
   const errorText = document.getElementById('modal-message');
