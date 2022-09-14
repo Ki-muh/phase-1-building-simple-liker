@@ -3,40 +3,49 @@ const EMPTY_HEART = '♡'
 const FULL_HEART = '♥'
 
 // Your JavaScript code goes here!
-const likeButtons = document.getElementsByClassName('like-glyph');
+const init = () => {
+  let modal = document.getElementById("modal");
+  let modalMessage = document.getElementById("modal-message");  
+  let likeElements = document.querySelectorAll(".like-glyph");
+ 
+  for(const like of likeElements){
+    like.addEventListener("click",(() => {
+      if(like.classList.contains("activated-heart")){
+        mimicServerCall()
+          .then(() => { 
+            like.classList.remove("activated-heart");
+            like.innerHTML = EMPTY_HEART;
+            alert(`you unliked a post`);
+          })
+          .catch((err) => {
+            modal.classList.remove("hidden");
+            modalMessage.innerHTML = err.message;
 
-document.addEventListener('DOMContentLoaded', () => {
-  Array.from(likeButtons).forEach(likeButton => {
-    likeButton.addEventListener('click', () => {
-      mimicServerCall()
-      .then((result) => {
-        if(likeButton.textContent === EMPTY_HEART) {
-          likeButton.textContent = FULL_HEART;
-          likeButton.classList.add('activated-heart');
-        } else {
-          likeButton.textContent = EMPTY_HEART;
-          likeButton.classList.remove('activated-heart');
-        }
-      }).catch((err) => {
-        handleError(err);
-      });
-    })
-  });
-})
+            setTimeout(()=> {
+              modal.classList.add("hidden");
+            },3000);
+          })
+      } else {
+        mimicServerCall()
+          .then(() => { 
+            like.classList.add("activated-heart");
+            like.innerHTML = FULL_HEART;
+            alert("You liked A post");           
+          })
+          .catch((err) => {
+            modal.classList.remove("hidden")
+            modalMessage.innerHTML = err.message;
+            
+            setTimeout(()=> {
+              modal.classList.add("hidden");
+            },3000);
+          });
+      };
+    }));
+  };
+};
 
-function handleError(errorMessage) {
-  const errorModal = document.getElementById('modal');
-  errorModal.classList.remove('hidden');
-  const errorText = document.getElementById('modal-message');
-  errorText.innerText = errorMessage;
-  if(!errorModal.classList.contains('hidden')) {
-    setTimeout(() => {
-      errorModal.classList.add('hidden')
-    }, 3000);
-  }
-}
-
-
+document.addEventListener("DOMContentLoaded",init);
 
 //------------------------------------------------------------------------------
 // Don't change the code below: this function mocks the server response
